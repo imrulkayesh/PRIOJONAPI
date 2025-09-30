@@ -51,3 +51,5 @@ _ReSharper*/
 secrets.json
 appsettings.Development.json
 appsettings.Local.json
+BACKBONE.APP/UserImages/
+
