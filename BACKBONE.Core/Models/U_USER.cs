@@ -23,14 +23,14 @@ namespace BACKBONE.Core.Models
         public string USER_TYPE_ID { get; set; }
         public string USER_IMAGE_PATH { get; set; }
         public string FB_TOKEN { get; set; }
-        //public string APPROVE_STATUS { get; set; }
+        public string APPROVE_STATUS { get; set; }
         public string APPROVE_BY { get; set; }
-        //public DateTime CDT { get; set; }
-        //public DateTime? UDT { get; set; }
-        //public string CDU { get; set; }
-        //public string UDU { get; set; }
+        public DateTime CDT { get; set; }
+        public DateTime? UDT { get; set; }
+        public string CDU { get; set; }
+        public string UDU { get; set; }
         public string GROUP_ID { get; set; }
-        //public int ACT { get; set; }
+        public int ACT { get; set; }
         public string BU_ID { get; set; }
         public string DATEOFBIRTH { get; set; }
     }

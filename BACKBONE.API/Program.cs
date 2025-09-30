@@ -1,9 +1,10 @@
-// Developer: Sheikh Asad Quadir
+﻿// Developer: Sheikh Asad Quadir
 using BACKBONE.API.Middleware;
 using BACKBONE.API.Services;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -56,6 +57,20 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<JwtMiddleware>(); 
 
 app.UseAuthentication();
+// Serve static files from UserImages folder
+
+var imageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "UserImages");
+if (!Directory.Exists(imageFolderPath))
+{
+    Directory.CreateDirectory(imageFolderPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(imageFolderPath),
+    RequestPath = "/UserImages"
+});
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -238,11 +238,11 @@ namespace BACKBONE.Infrastructure
 
                 if (ex.Message.Contains("ORA-00001") && ex.Message.Contains("U_USERS_NID"))
                 {
-                    userMessage = "A user with the same NID already exists.";
+                    userMessage = "Same NID already exists.";
                 }
                 else if (ex.Message.Contains("ORA-00001") && ex.Message.Contains("U_USER_USER_ID"))
                 {
-                    userMessage = "A user with the same User ID already exists.";
+                    userMessage = "Same Mobile Number already exists.";
                 }
                 else if (ex.Message.Contains("ORA-00001"))
                 {
