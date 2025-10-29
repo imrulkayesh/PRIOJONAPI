@@ -27,9 +27,9 @@ namespace BACKBONE.Infrastructure
                 IDBHelper _db = new OracleDbHelper(connectionString);
 
                 string sql = @"SELECT ID, USER_ID, PASSWORD, NAME, STAFF_ID, MOBILE, EMAIL, 
-                              DIVITION_ID, DISTRICT_ID, THANA_ID, ADDRESS, NID, USER_TYPE_ID, 
+                              DIVISION_ID, DISTRICT_ID, THANA_ID, ADDRESS, NID, USER_TYPE_ID, 
                               USER_IMAGE_PATH, FB_TOKEN, APPROVE_STATUS, APPROVE_BY, CDT, UDT, 
-                              CDU, UDU, GROUP_ID, ACT, BU_ID
+                              CDU, UDU, GROUP_ID, ACT, BU_ID,BASE_ID, ZONE_ID,DATEOFBIRTH
                               FROM PRIOJON.U_USERS 
                               WHERE USER_ID=:EMAIL AND ACT=1";
 
@@ -186,7 +186,7 @@ namespace BACKBONE.Infrastructure
                 parameters.Add("p_staff_id", UserData.STAFF_ID);
                 parameters.Add("p_mobile", UserData.MOBILE);
                 parameters.Add("p_email", UserData.EMAIL);
-                parameters.Add("p_divition_id", UserData.DIVITION_ID);
+                parameters.Add("p_division_id", UserData.DIVISION_ID);
                 parameters.Add("p_district_id", UserData.DISTRICT_ID);
                 parameters.Add("p_thaha_id", UserData.THANA_ID);
                 parameters.Add("p_address", UserData.ADDRESS);

@@ -33,7 +33,9 @@ namespace BACKBONE.API.Middleware
                 "/api/v1/data/common/division",
                 "/api/v1/data/common/district",
                 "/api/v1/data/common/thana",
-                "/api/v1/data/common/user-division-data"
+                "/api/v1/data/common/user-division-data",
+                "/InvoiceImages",
+                //"/api/v1/data/invoice/all-invoices",
                 // Add more paths here as needed
             };
         }
@@ -150,17 +152,38 @@ namespace BACKBONE.API.Middleware
             return false;
         }
 
+        //private async Task RespondWithJson(HttpContext context, string message, bool success)
+        //{
+        //    var response = new EQResponse<string>
+        //    {
+        //        Message = message,
+        //        Success = success
+        //    };
+
+        //    context.Response.ContentType = "application/json";
+        //    context.Response.StatusCode = 401;
+        //    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        //}
         private async Task RespondWithJson(HttpContext context, string message, bool success)
         {
-            var response = new EQResponse<string>
+            var response = new
             {
-                Message = message,
-                Success = success
+                message = message,
+                success = success,
+                data = (object)null
             };
 
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = 401;
-            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = false
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response, options));
         }
+
     }
 }

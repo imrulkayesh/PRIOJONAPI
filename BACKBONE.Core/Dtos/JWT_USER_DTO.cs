@@ -11,5 +11,11 @@ namespace BACKBONE.Core.Dtos
         public string USER_ID { get; set; }
         public string USER_MAIL { get; set; }
         public string USER_NAME { get; set; }
+        public string MOBILE { get; set; }
+        public string USER_TYPE_ID { get; set; }
+        public string NID { get; set; }
+        public string USER_IMAGE_PATH { get; set; }
+        public DateTime? DATEOFBIRTH { get; set; }
+        public int ACT { get; set; }
     }
 }

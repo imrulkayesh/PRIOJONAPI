@@ -50,34 +50,119 @@ namespace BACKBONE.API.Controllers.v1.Auth
             });
         }
 
+        //[HttpPost("login")]
+        //public async Task<IActionResult> Login([FromForm] LOGIN_DTO loginDto)
+        //{
+        //    if (loginDto == null || string.IsNullOrEmpty(loginDto.EMP_CODE) || string.IsNullOrEmpty(loginDto.PASSWORD))
+        //    {
+        //        Console.WriteLine("Invalid login data provided");
+        //        return BadRequest("Invalid login data");
+        //    }
+
+        //    try
+        //    {
+        //        Console.WriteLine($"Login attempt for user: {loginDto.EMP_CODE}");
+
+        //        // Step 1: Find active users using email only through UserRepository
+        //        var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(loginDto.EMP_CODE);
+
+        //        if (user != null)
+        //        {
+        //            // Since there's no HRIS system, authenticate directly against the database
+        //            Console.WriteLine($"Authenticating user: {user.USER_ID}");
+        //            bool isAuthenticated = (user.PASSWORD == loginDto.PASSWORD);
+
+        //            if (isAuthenticated)
+        //            {
+        //                Console.WriteLine($"User {user.USER_ID} authenticated successfully");
+        //                Console.WriteLine($"JWT Settings - Expiry Minutes: {_jwtSettings.ExpiryMinutes}");
+
+        //                // Create a minimal user object for JWT generation to avoid exposing sensitive data
+        //                var jwtUserDto = new JWT_USER_DTO
+        //                {
+        //                    USER_ID = user.USER_ID,
+        //                    USER_MAIL = user.EMAIL,
+        //                    USER_NAME = user.NAME
+        //                };
+
+        //                // Generate JWT token using the minimal user DTO
+        //                var jwtToken = _unitOfWork.JwtTokenService.GenerateToken(jwtUserDto);
+        //                if (jwtToken == null)
+        //                {
+        //                    Console.WriteLine($"Error generating JWT token for user {user.USER_ID}");
+        //                    return StatusCode(500, "Error generating JWT token");
+        //                }
+
+        //                // Generate refresh token
+        //                var refreshToken = _unitOfWork.RefreshTokenService.GenerateRefreshTokenAsync();
+        //                if (refreshToken == null || string.IsNullOrEmpty(refreshToken.ToString()))
+        //                {
+        //                    Console.WriteLine($"Error generating refresh token for user {user.USER_ID}");
+        //                    return StatusCode(500, "Error generating refresh token");
+        //                }
+
+        //                // Save refresh token to database
+        //                await _unitOfWork.RefreshTokenService.SaveRefreshTokenAsync(new REFRESH_TOKEN
+        //                {
+        //                    USER_ID = user.USER_ID, // Use USER_ID directly from U_USER
+        //                    TOKEN = refreshToken.ToString(),
+        //                    EXPIRATION_DATE = DateTime.Now.AddDays(7)
+        //                });
+
+        //                Console.WriteLine($"Tokens generated for user {user.USER_ID}");
+
+        //                // Return tokens
+        //                return Ok(new AUTH_RESPONSE_DTO
+        //                {
+        //                    TOKEN = jwtToken,
+        //                    REFRESH_TOKEN = refreshToken.ToString()
+        //                });
+        //            }
+        //            else
+        //            {
+        //                Console.WriteLine($"Authentication failed for user: {loginDto.EMP_CODE}");
+        //                return Unauthorized("Invalid credentials");
+        //            }
+        //        }
+        //        else
+        //        {
+        //            Console.WriteLine($"User not found: {loginDto.EMP_CODE}");
+        //            return Unauthorized("Invalid credentials");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error during authentication for user: {loginDto.EMP_CODE}: {ex.Message}");
+        //        return StatusCode(500, "Error during authentication: " + ex.Message);
+        //    }
+        //}
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LOGIN_DTO loginDto)
         {
+            var response = new EQResponse<object>();
+
             if (loginDto == null || string.IsNullOrEmpty(loginDto.EMP_CODE) || string.IsNullOrEmpty(loginDto.PASSWORD))
             {
-                Console.WriteLine("Invalid login data provided");
-                return BadRequest("Invalid login data");
+                response.Success = false;
+                response.Message = "Invalid login data";
+                response.Data = new EQResponseData<object> { SingleValue = null, ListValue = null, DataTableValue = null };
+                return BadRequest(response);
             }
 
             try
             {
                 Console.WriteLine($"Login attempt for user: {loginDto.EMP_CODE}");
-                
-                // Step 1: Find active users using email only through UserRepository
                 var user = await _unitOfWork.UserRepository.GetUserByEmailAsync(loginDto.EMP_CODE);
 
                 if (user != null)
                 {
-                    // Since there's no HRIS system, authenticate directly against the database
-                    Console.WriteLine($"Authenticating user: {user.USER_ID}");
                     bool isAuthenticated = (user.PASSWORD == loginDto.PASSWORD);
 
                     if (isAuthenticated)
                     {
                         Console.WriteLine($"User {user.USER_ID} authenticated successfully");
-                        Console.WriteLine($"JWT Settings - Expiry Minutes: {_jwtSettings.ExpiryMinutes}");
-                        
-                        // Create a minimal user object for JWT generation to avoid exposing sensitive data
+
                         var jwtUserDto = new JWT_USER_DTO
                         {
                             USER_ID = user.USER_ID,
@@ -85,55 +170,74 @@ namespace BACKBONE.API.Controllers.v1.Auth
                             USER_NAME = user.NAME
                         };
 
-                        // Generate JWT token using the minimal user DTO
                         var jwtToken = _unitOfWork.JwtTokenService.GenerateToken(jwtUserDto);
-                        if (jwtToken == null)
-                        {
-                            Console.WriteLine($"Error generating JWT token for user {user.USER_ID}");
-                            return StatusCode(500, "Error generating JWT token");
-                        }
-
-                        // Generate refresh token
                         var refreshToken = _unitOfWork.RefreshTokenService.GenerateRefreshTokenAsync();
-                        if (refreshToken == null || string.IsNullOrEmpty(refreshToken.ToString()))
+
+                        if (jwtToken == null || string.IsNullOrEmpty(refreshToken))
                         {
-                            Console.WriteLine($"Error generating refresh token for user {user.USER_ID}");
-                            return StatusCode(500, "Error generating refresh token");
+                            response.Success = false;
+                            response.Message = "Error generating tokens";
+                            response.Data = new EQResponseData<object> { SingleValue = null, ListValue = null, DataTableValue = null };
+                            return StatusCode(500, response);
                         }
 
                         // Save refresh token to database
                         await _unitOfWork.RefreshTokenService.SaveRefreshTokenAsync(new REFRESH_TOKEN
                         {
-                            USER_ID = user.USER_ID, // Use USER_ID directly from U_USER
-                            TOKEN = refreshToken.ToString(),
+                            USER_ID = user.USER_ID,
+                            TOKEN = refreshToken,
                             EXPIRATION_DATE = DateTime.Now.AddDays(7)
                         });
 
-                        Console.WriteLine($"Tokens generated for user {user.USER_ID}");
-
-                        // Return tokens
-                        return Ok(new AUTH_RESPONSE_DTO
+                        // Prepare final response (Format-1)
+                        response.Success = true;
+                        response.Message = "Login successful";
+                        response.Data = new EQResponseData<object>
                         {
-                            TOKEN = jwtToken,
-                            REFRESH_TOKEN = refreshToken.ToString()
-                        });
+                            SingleValue = new
+                            {
+                                USER_NAME = user.NAME,
+                                MOBILE = user.MOBILE,
+                                USER_TYPE_ID = user.USER_TYPE_ID,
+                                USER_ID = user.USER_ID,
+                                USER_MAIL = user.EMAIL,
+                                NID = user.NID,
+                                USER_IMAGE_PATH = user.USER_IMAGE_PATH,
+                                DATEOFBIRTH = user.DATEOFBIRTH,
+                                BU_ID = user.BU_ID,
+                                BASE_ID = user.BASE_ID,
+                                ZONE_ID = user.ZONE_ID,
+                                TOKEN = jwtToken,
+                                REFRESH_TOKEN = refreshToken
+                            },
+                            ListValue = null,
+                            DataTableValue = null
+                        };
+
+                        return Ok(response);
                     }
                     else
                     {
-                        Console.WriteLine($"Authentication failed for user: {loginDto.EMP_CODE}");
-                        return Unauthorized("Invalid credentials");
+                        response.Success = false;
+                        response.Message = "Invalid credentials";
+                        response.Data = new EQResponseData<object> { SingleValue = null, ListValue = null, DataTableValue = null };
+                        return Unauthorized(response);
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"User not found: {loginDto.EMP_CODE}");
-                    return Unauthorized("Invalid credentials");
+                    response.Success = false;
+                    response.Message = "User not found";
+                    response.Data = new EQResponseData<object> { SingleValue = null, ListValue = null, DataTableValue = null };
+                    return Unauthorized(response);
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error during authentication for user: {loginDto.EMP_CODE}: {ex.Message}");
-                return StatusCode(500, "Error during authentication: " + ex.Message);
+                response.Success = false;
+                response.Message = $"Error during authentication: {ex.Message}";
+                response.Data = new EQResponseData<object> { SingleValue = null, ListValue = null, DataTableValue = null };
+                return StatusCode(500, response);
             }
         }
 

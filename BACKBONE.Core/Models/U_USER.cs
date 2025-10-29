@@ -15,7 +15,7 @@ namespace BACKBONE.Core.Models
         public string STAFF_ID { get; set; }
         public string MOBILE { get; set; }
         public string EMAIL { get; set; }
-        public string DIVITION_ID { get; set; }
+        public string DIVISION_ID { get; set; }
         public string DISTRICT_ID { get; set; }
         public string THANA_ID { get; set; }
         public string ADDRESS { get; set; }
@@ -33,5 +33,7 @@ namespace BACKBONE.Core.Models
         public int ACT { get; set; }
         public string BU_ID { get; set; }
         public string DATEOFBIRTH { get; set; }
+        public string BASE_ID { get; set; }
+        public string ZONE_ID { get; set; }
     }
 }

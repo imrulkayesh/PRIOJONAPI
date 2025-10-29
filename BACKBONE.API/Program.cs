@@ -1,10 +1,12 @@
 ﻿// Developer: Sheikh Asad Quadir
 using BACKBONE.API.Middleware;
 using BACKBONE.API.Services;
+using BACKBONE.Application.Interfaces;
+using BACKBONE.Infrastructure;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,9 @@ builder.Services.AddLogging(loggingBuilder => {
 
 // Add your service extensions here
 builder.Services.AddDataServices(builder.Configuration);
+
+// Register Invoice Repository
+builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -69,6 +74,18 @@ app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(imageFolderPath),
     RequestPath = "/UserImages"
+});
+
+var invoiceImageFolderPath = Path.Combine(Directory.GetCurrentDirectory(), "InvoiceImages");
+if (!Directory.Exists(invoiceImageFolderPath))
+{
+    Directory.CreateDirectory(invoiceImageFolderPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(invoiceImageFolderPath),
+    RequestPath = "/InvoiceImages"
 });
 
 app.UseAuthorization();

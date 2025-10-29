@@ -79,7 +79,6 @@ namespace BACKBONE.API.Controllers.v1.Common
             Console.WriteLine($"Failed to retrieve data by ID {id}: {response.Message}");
             return BadRequest(response);
         }
-        // test
         [HttpGet("user-division-data")]
         [AllowAnonymous]
         public async Task<ActionResult<EQResponse2<UserDivisionData>>> GetUserDivisionData()
@@ -90,6 +89,77 @@ namespace BACKBONE.API.Controllers.v1.Common
             if (response.Success)
                 return Ok(response);
 
+            return BadRequest(response);
+        }
+
+        [HttpGet("item/{barcode}")]
+        [Authorize]
+        public IActionResult GetItemDataByBarcodeNumber(string barcode)
+        {
+            Console.WriteLine($"Getting data by Barcode Number: {barcode}");
+            var response = _unitOfWork.CommonRepository.GetItemDataByBarcodeNumberAsync(barcode);
+            if (response.Success == true)
+            {
+                Console.WriteLine($"Successfully retrieved data by Barcode Number: {barcode}");
+                return Ok(response);
+            }
+            Console.WriteLine($"Failed to retrieve data by Barcode Number {barcode}: {response.Message}");
+            return BadRequest(response);
+        }
+
+        [HttpGet("point/{userId}")]
+        [Authorize]
+        public IActionResult GetPointByUserID(string userId)
+        {
+            Console.WriteLine($"Getting data by User ID: {userId}");
+            var response = _unitOfWork.CommonRepository.GetPointByUserIDAsync(userId);
+            if (response.Success == true)
+            {
+                Console.WriteLine($"Successfully retrieved data by User Id : {userId}");
+                return Ok(response);
+            }
+            Console.WriteLine($"Failed to retrieve data by User Id {userId}: {response.Message}");
+            return BadRequest(response);
+        }
+
+        [HttpGet("dashboard/{userId}")]
+        [Authorize]
+        public async Task<ActionResult<EQResponse2<DashboardData>>> GetDashboardData(string userId)
+        {
+            // Await the async call to the service
+            var response = await _unitOfWork.CommonRepository.GetDashboardDataAsync(userId);
+
+            if (response.Success)
+                return Ok(response);
+
+            return BadRequest(response);
+        }
+
+        [HttpGet("all-approval-pending-users/{userId}")]
+        [Authorize]
+        //[AllowAnonymous]
+        public  IActionResult GetAllApprovalPendingUserData(string userId)
+        {
+            var response = _unitOfWork.CommonRepository.GetAllApprovalPendingUserDataAsync(userId);
+
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        [HttpGet("all-approval-pending-invoices/{userId}")]
+        [Authorize]
+        //[AllowAnonymous]
+        public IActionResult GetAllApprovalPendingInvoiceData(string userId)
+        {
+            var response = _unitOfWork.CommonRepository.GetAllApprovalPendingInvoiceDataAsync(userId);
+
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
             return BadRequest(response);
         }
 
