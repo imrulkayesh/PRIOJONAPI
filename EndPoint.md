@@ -42,7 +42,7 @@
 
 9\. http://pmc.prangroup.com/PriojonApi/api/v1/data/invoice/invoice-barcode -- POST
 
-10\. http://pmc.prangroup.com/PriojonApi/api/v1/data/common/item - GET
+10\. http://pmc.prangroup.com/PriojonApi/api/v1/data/common/item/{barcode} - GET
 
 11\. http://pmc.prangroup.com/PriojonApi/api/v1/data/common/point/{userid} - GET
 
@@ -54,5 +54,5 @@
 
 14\. http://pmc.prangroup.com/PriojonApi/api/v1/data/invoice/all-invoices - POST
 
-
+15\. http://pmc.prangroup.com/PriojonApi/api/v1/data/common/all-items- GET
 

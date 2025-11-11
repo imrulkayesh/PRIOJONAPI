@@ -540,6 +540,57 @@ namespace BACKBONE.Infrastructure
 
             return response;
         }
+        public EQResponse<List<PJ_ITEM_MASTER_DTO>> GetAllItemsDataAsync()
+        {
+            var response = new EQResponse<List<PJ_ITEM_MASTER_DTO>>();
+
+            try
+            {
+                var connectionString = GetConnectionString(1);
+                IDBHelper _db = new OracleDbHelper(connectionString);
+
+                var result = _db.ExecuteStoredProcedureWithRefCursor("SP_GET_ALL_ITEMS", "o_cursor");
+
+                var DataList = new List<PJ_ITEM_MASTER_DTO>();
+                foreach (var row in result)
+                {
+                    DataList.Add(new PJ_ITEM_MASTER_DTO
+                    {
+                        ITEM_NAME = row["ITEM_NAME"]?.ToString() ?? string.Empty,
+                        ITEM_CODE = row["ITEM_CODE"]?.ToString() ?? string.Empty,
+                        BARCODE = row["BARCODE"]?.ToString() ?? string.Empty,
+                        PRICE = Convert.ToInt32(row["PRICE"]),
+                        POINT = Convert.ToInt32(row["POINT"]),
+                        SCAN_COUNT = Convert.ToInt32(row["SCAN_COUNT"]),
+                        UNIT_CODE = row["UNIT_CODE"]?.ToString() ?? string.Empty
+
+                    });
+                }
+
+                if (DataList.Count > 0)
+                {
+                    response.Success = true;
+                    response.Message = "Item data retrieved successfully.";
+                    response.Data = new EQResponseData<List<PJ_ITEM_MASTER_DTO>>
+                    {
+                        ListValue = DataList.Count > 0 ? new List<List<PJ_ITEM_MASTER_DTO>> { DataList } : new List<List<PJ_ITEM_MASTER_DTO>>()
+                    };
+                }
+                else
+                {
+                    response.Success = false;
+                    response.Message = "Item data not found.";
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving Item data by ID: {ex.Message}");
+                response.Success = false;
+                response.Message = $"Error retrieving Item data: {ex.Message}";
+            }
+
+            return response;
+        }
 
     }
 }

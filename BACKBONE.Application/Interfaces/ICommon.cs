@@ -21,7 +21,9 @@ namespace BACKBONE.Application.Interfaces
         Task<EQResponse2<DashboardData>> GetDashboardDataAsync(string userId);
         EQResponse<List<U_USER_DTO>> GetAllApprovalPendingUserDataAsync(string userId);
         EQResponse<List<PJ_All_PENDING_INVOICE_DTO>> GetAllApprovalPendingInvoiceDataAsync(string userId);
+        EQResponse<List<PJ_ITEM_MASTER_DTO>> GetAllItemsDataAsync();
         
+
 
 
 

@@ -162,6 +162,17 @@ namespace BACKBONE.API.Controllers.v1.Common
             }
             return BadRequest(response);
         }
+        [HttpGet("all-items")]
+        [Authorize]
+        public IActionResult GetAllItemsData()
+        {
+            var response = _unitOfWork.CommonRepository.GetAllItemsDataAsync();
+            if (response.Success == true)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
 
     }
 }

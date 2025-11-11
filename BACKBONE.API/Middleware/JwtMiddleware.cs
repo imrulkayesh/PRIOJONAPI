@@ -35,7 +35,7 @@ namespace BACKBONE.API.Middleware
                 "/api/v1/data/common/thana",
                 "/api/v1/data/common/user-division-data",
                 "/InvoiceImages",
-                //"/api/v1/data/invoice/all-invoices",
+                //"/api/v1/data/common/all-items",
                 // Add more paths here as needed
             };
         }
