@@ -16,6 +16,7 @@ namespace BACKBONE.Application.Interfaces
         IHrisAuthService HrisAuthService { get; }
         ISampleDataRepository SampleDataRepository { get; }
         ICommon CommonRepository { get; }
-        IInvoiceRepository InvoiceRepository { get; }   
+        IInvoiceRepository InvoiceRepository { get; }
+        IApprovalRepository ApprovalRepository { get; }
     }
 }

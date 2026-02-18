@@ -25,6 +25,9 @@ builder.Services.AddDataServices(builder.Configuration);
 // Register Invoice Repository
 builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
 
+builder.Services.AddScoped(typeof(IApprovalRepository), typeof(ApprovalRepository));
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 

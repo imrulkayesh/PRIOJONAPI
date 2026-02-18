@@ -16,6 +16,7 @@ namespace BACKBONE.Infrastructure
 
         public ICommon CommonRepository { get; }
         public IInvoiceRepository InvoiceRepository { get; }
+        public IApprovalRepository ApprovalRepository { get; }
 
         public UnitOfWork(
             ITokenRepository iTokenRepository, 
@@ -25,7 +26,8 @@ namespace BACKBONE.Infrastructure
             IHrisAuthService hrisAuthService,
             ISampleDataRepository sampleDataRepository,
             ICommon commonRepository,
-            IInvoiceRepository invoiceRepository)
+            IInvoiceRepository invoiceRepository,
+            IApprovalRepository approvalRepository)
         {
             TokenRepositor = iTokenRepository;
             RefreshTokenService = refreshTokenService;
@@ -35,6 +37,7 @@ namespace BACKBONE.Infrastructure
             SampleDataRepository = sampleDataRepository;
             CommonRepository = commonRepository;
             InvoiceRepository = invoiceRepository;
+            ApprovalRepository = approvalRepository;
         }
     }
 }

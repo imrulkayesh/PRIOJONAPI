@@ -56,3 +56,7 @@
 
 15\. http://pmc.prangroup.com/PriojonApi/api/v1/data/common/all-items- GET
 
+16\. http://pmc.prangroup.com/PriojonApi/api/v1/data/approval/approval -- POST
+
+
+

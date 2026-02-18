@@ -35,5 +35,7 @@ namespace BACKBONE.Core.Models
         public string DATEOFBIRTH { get; set; }
         public string BASE_ID { get; set; }
         public string ZONE_ID { get; set; }
+        public string APPROVE_REMARK { get; set; }
+        public DateTime? APPROVE_DATE { get; set; }
     }
 }
